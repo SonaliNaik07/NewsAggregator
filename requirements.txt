@@ -1,0 +1,25 @@
+Categories
+Search and Filters
+Push Notifications
+Engagement Tools
+Social Media Integration 
+Registration and Personal Profiles
+Personal Feed
+Options to Interact With Content
+languages (django,nodejs,react js)
+
+✨ Polish It for Originality
+Add a “Top 3 Stories Today” widget
+
+Auto-refresh every few minutes (pull latest articles)
+
+Make the UI multilingual-ready (even static toggle is a nice touch)
+
+Include a contributor badge system—even if just mock data
+
+🧪 Extra Credit if You Have a Bit More Time
+Track popular tags (simple frequency count)
+
+Add share buttons (WhatsApp, LinkedIn, X)
+
+Implement category-based tabs on the home page for navigation

@@ -1,0 +1,2 @@
+Introduction:
+A news aggregator is a website or application that gathers news articles and other information from various online sources and presents them in a single, organized location. Essentially, it acts as a central hub, allowing users to access information from multiple sources without having to visit each site individually. It provides the information based on the roles and categories
