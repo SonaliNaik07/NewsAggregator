@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import CategorySelect from './components/CategorySelect';
-import './Register.css';
+import './styles/Register.css';
 
 const Register: React.FC = () => {
   // 🔐 Form state for user input

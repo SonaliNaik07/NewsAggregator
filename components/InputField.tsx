@@ -1,3 +1,4 @@
+import '../Styles/Dashboard.css';
 import React from 'react';
 
 const InputField: React.FC = () => {

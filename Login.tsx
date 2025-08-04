@@ -1,10 +1,10 @@
 
 import React from 'react';
 import InputField from './components/InputField';
-import './index.css';
-import './Register.tsx'
+import './styles/index.css';
+import './Register'
 
-const App: React.FC = () => {
+const Login: React.FC = () => {
   return (
     <div className="login-wrapper">
       <div className="login-card">
@@ -36,4 +36,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default Login;
