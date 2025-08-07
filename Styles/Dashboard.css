@@ -55,3 +55,48 @@ body {
   flex: 1;
   box-shadow: 0 0 10px rgba(0,0,0,0.05);
 }
+/*added on 2025-08-05*/
+.category-switcher {
+  margin: 20px 0;
+  display: flex;
+  gap: 10px;
+}
+
+.category-switcher button {
+  padding: 8px 16px;
+  border: none;
+  background-color: #eee;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.category-switcher .active {
+  background-color: #007bff;
+  color: white;
+}
+
+.news-feed {
+  margin-top: 2rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.news-card {
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #f9f9f9;
+}
+
+.dashboard {
+  background: linear-gradient(to right, #e0eafc, #cfdef3);
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.user-logo {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  cursor: pointer;
+}

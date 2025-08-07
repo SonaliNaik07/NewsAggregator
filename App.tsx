@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route,Navigate } from 'react-router-do
 import Login from './Login';
 import Register from './Register';
 import Dashboard from './Dashboard';
+import UserDashboard from './UserDashboard';
+
 const App: React.FC = () => {
   return (
     <Router>
@@ -11,7 +13,7 @@ const App: React.FC = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="*" element={<Navigate to="/" />} />
+         <Route path="/userdashboard" element={<UserDashboard />} />
       </Routes>
     </Router>
 
