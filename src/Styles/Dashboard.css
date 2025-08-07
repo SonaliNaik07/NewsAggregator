@@ -1,0 +1,102 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.dashboard {
+  display: flex;
+}
+
+.sidebar {
+  width: 220px;
+  background-color: #242526;
+  color: white;
+  padding: 20px;
+  height: 100vh;
+}
+
+.logo {
+  font-size: 1.5em;
+  margin-bottom: 30px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  margin: 15px 0;
+  cursor: pointer;
+}
+
+.main {
+  flex: 1;
+  padding: 20px;
+  background-color: #f4f5f7;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.widgets {
+  display: flex;
+  gap: 20px;
+}
+
+.widget {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  flex: 1;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+/*added on 2025-08-05*/
+.category-switcher {
+  margin: 20px 0;
+  display: flex;
+  gap: 10px;
+}
+
+.category-switcher button {
+  padding: 8px 16px;
+  border: none;
+  background-color: #eee;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.category-switcher .active {
+  background-color: #007bff;
+  color: white;
+}
+
+.news-feed {
+  margin-top: 2rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.news-card {
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #f9f9f9;
+}
+
+.dashboard {
+  background: linear-gradient(to right, #e0eafc, #cfdef3);
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.user-logo {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  cursor: pointer;
+}
