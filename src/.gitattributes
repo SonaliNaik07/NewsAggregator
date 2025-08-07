@@ -1,0 +1,7 @@
+# Enforce LF for all text files
+* text=auto
+
+# Specific rules for JS/TS files
+*.js text eol=lf
+*.ts text eol=lf
+*.d.ts text eol=lf
