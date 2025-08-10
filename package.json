@@ -307,12 +307,11 @@
     "yocto-queue": "^0.1.0",
     "zod": "^4.0.14"
   },
- "scripts": {
-  "dev": "vite",
-  "build": "vite build",
-  "preview": "vite preview"
-}
-,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/SonaliNaik07/NewsAggregator.git"
@@ -326,6 +325,7 @@
   "homepage": "https://github.com/SonaliNaik07/NewsAggregator#readme",
   "description": "",
   "devDependencies": {
+    "@vitejs/plugin-react": "^5.0.0",
     "eslint": "^9.32.0",
     "prettier": "^3.6.2",
     "vite": "^7.1.0",

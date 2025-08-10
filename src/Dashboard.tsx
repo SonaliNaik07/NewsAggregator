@@ -7,7 +7,6 @@ import './Styles/Dashboard.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-// Define the article type for type safety
 type Article = {
   title: string;
   description: string;
@@ -16,28 +15,29 @@ type Article = {
 };
 
 const Dashboard: React.FC = () => {
-  // 🧮 State to store metrics shown in widgets
   const [newsMetrics, setNewsMetrics] = useState({
     articlesToday: 'Loading...',
     categories: 'Loading...',
     sources: 'Loading...',
   });
 
-
- 
-
-  // 📌 State to track which news category is selected
   const [selectedCategory, setSelectedCategory] = useState('general');
-
-  // 🗞️ State to hold fetched articles
   const [articles, setArticles] = useState<Article[]>([]);
-
   const navigate = useNavigate();
 
-  // 👤 Retrieve user details from localStorage (includes role & interests)
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const defaultUser = {
+    id: 'demo-user',
+    role: 'guest',
+    interests: ['general', 'technology', 'sports']
+  };
 
-  // 📊 Fetch dashboard metrics based on user role
+  const user = JSON.parse(localStorage.getItem('user') || JSON.stringify(defaultUser));
+  
+  const [sidebarVisible, setSidebarVisible] = useState(true);//sidebar visibility state
+
+
+  // Comment out API calls if backend isn't ready
+  /*
   useEffect(() => {
     axios.get('http://localhost:5000/api/dashboard/overview', {
       headers: { 'x-user-role': user.role }
@@ -54,7 +54,6 @@ const Dashboard: React.FC = () => {
     });
   }, []);
 
-  // 📰 Fetch articles based on selected category and user role
   useEffect(() => {
     axios.get(`http://localhost:5000/api/news?category=${selectedCategory}`, {
       headers: { 'x-user-role': user.role }
@@ -62,51 +61,61 @@ const Dashboard: React.FC = () => {
     .then((res) => setArticles(res.data))
     .catch((err) => console.error('News fetch error:', err));
   }, [selectedCategory]);
+  */
 
-  // 💾 Save an article to user's dashboard
+  // Mock articles for now
+
+
+
+  
+  useEffect(() => {
+    setArticles([
+      {
+        title: 'AI Revolution in 2025',
+        description: 'Artificial Intelligence is transforming industries...',
+        url: 'https://example.com/ai-news',
+        source: { name: 'TechDaily' }
+      },
+      {
+        title: 'Sports Highlights of the Week',
+        description: 'Catch up on the biggest moments in sports...',
+        url: 'https://example.com/sports-news',
+        source: { name: 'SportsBuzz' }
+      }
+    ]);
+  }, []);
+
   const handleSave = async (article: Article) => {
-    try {
-      await axios.post('http://localhost:5000/api/user/save-news', {
-        userId: user.id,
-        article
-      });
-      alert('Saved to your dashboard');
-    } catch (err) {
-      console.error('Save error:', err);
-    }
+    alert('Saved to your dashboard (mock)');
   };
 
-  // 📚 Summarize an article's description
   const handleSummarize = async (article: Article) => {
-    try {
-      const res = await axios.post('http://localhost:5000/api/summarize', {
-        content: article.description
-      });
-      alert(`Summary:\n${res.data.summary}`);
-    } catch (err) {
-      console.error('Summarize error:', err);
-    }
+    alert(`Summary:\n${article.description.slice(0, 50)}...`);
   };
 
   return (
+    
     <div className="dashboard">
-      <Sidebar />
+      
+            {/* Sidebar with visibility toggle */}
+<Sidebar visible={sidebarVisible} onToggle={() => setSidebarVisible((prev) => !prev)} />
+
+      <button className="hamburger"
+          onClick={() => setSidebarVisible((prev) => !prev)}
+      >
+           ☰
+      </button>
+
+
       <div className="main">
         <Header />
 
-        {/* 👤 Avatar that navigates to user dashboard */}
-        <div className="user-avatar" onClick={() => navigate('/user-dashboard')}>
-          <img src="/assets/user-icon.png" alt="User" />
-        </div>
-
-        {/* 📈 Display news metrics in widget blocks */}
         <div className="widgets">
           <Widget title="Articles Today" value={newsMetrics.articlesToday} />
           <Widget title="Active Categories" value={newsMetrics.categories} />
           <Widget title="News Sources" value={newsMetrics.sources} />
         </div>
 
-        {/* 🧭 Category selection based on user interests */}
         <div className="category-switcher">
           {user.interests.map((cat: string) => (
             <button
@@ -119,7 +128,6 @@ const Dashboard: React.FC = () => {
           ))}
         </div>
 
-        {/* 🗞️ News feed showing articles with save and summarize options */}
         <div className="news-feed">
           {articles.map((article, index) => (
             <NewsCard

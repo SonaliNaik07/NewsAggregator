@@ -8,7 +8,7 @@ const Login: React.FC = () => {
   return (
     <div className="login-wrapper">
       <div className="login-card">
-        <h2 className="form-title">LOG IN TO PRESSDESK PULSE</h2>
+        <h2 className="form-title">LOG IN</h2>
         <p className="tagline">Stay informed. Stay relevant.</p>
 
         <form className="login-form">
@@ -25,7 +25,13 @@ const Login: React.FC = () => {
           </div>
 
           <a href="#" className="forgot-pass-link">Forgot Password?</a>
-          <button className="login-button">Sign in</button>
+          <button className="login-button" type="button" onClick={() => {
+            localStorage.setItem('user', JSON.stringify({
+              id: 'demo123',
+              role: 'admin',
+              interests: ['technology', 'sports', 'health']
+            }));
+          }}>Sign in</button>
         </form>
 
         <p className="signup-text">

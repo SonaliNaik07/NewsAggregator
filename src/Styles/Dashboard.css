@@ -5,15 +5,14 @@ body {
 
 .dashboard {
   display: flex;
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background: linear-gradient(to right, #e0eafc, #cfdef3);
+  padding: 2rem;
 }
 
-.sidebar {
-  width: 220px;
-  background-color: #242526;
-  color: white;
-  padding: 20px;
-  height: 100vh;
-}
+
 
 .logo {
   font-size: 1.5em;
@@ -32,15 +31,11 @@ body {
 
 .main {
   flex: 1;
-  padding: 20px;
+  padding: 2rem;
+  overflow-y:auto;
   background-color: #f4f5f7;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
+  height: 100vh; /* match sidebar height */
+  box-sizing: border-box;
 }
 
 .widgets {
@@ -88,15 +83,87 @@ body {
   background: #f9f9f9;
 }
 
-.dashboard {
-  background: linear-gradient(to right, #e0eafc, #cfdef3);
-  min-height: 100vh;
-  padding: 2rem;
-}
+
 
 .user-logo {
   position: absolute;
   top: 1rem;
   right: 1rem;
   cursor: pointer;
+}
+
+
+/*header*/
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background-color: #f5f5f5;
+    flex-shrink: 0;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.user-avatar img {
+  transition: transform 0.2s;
+}
+
+.user-avatar img:hover {
+  transform: scale(1.1);
+}
+
+/* Sidebar visibility */
+.sidebar {
+  width: 220px;
+  background-color: #242526;
+  color: white;
+  padding: 20px;
+  height: 100vh;
+   transition: transform 0.3s ease;
+  box-sizing: border-box;
+  }
+ 
+
+.sidebar.hidden {
+  transform: translateX(-220px);
+}
+
+.hamburger {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 1000;
+  background: #fff;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  padding: 8px;
+  border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+  .dashboard {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    position: absolute;
+    height: 100%;
+    z-index: 100;
+    transform: translateX(-100%);
+  }
+
+  .sidebar.visible {
+    transform: translateX(0);
+  }
+
+  .main {
+    padding: 1rem;
+  }
 }
