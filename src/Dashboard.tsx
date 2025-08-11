@@ -32,42 +32,8 @@ const Dashboard: React.FC = () => {
   };
 
   const user = JSON.parse(localStorage.getItem('user') || JSON.stringify(defaultUser));
-  
-  const [sidebarVisible, setSidebarVisible] = useState(true);//sidebar visibility state
+  const [sidebarVisible, setSidebarVisible] = useState(true);
 
-
-  // Comment out API calls if backend isn't ready
-  /*
-  useEffect(() => {
-    axios.get('http://localhost:5000/api/dashboard/overview', {
-      headers: { 'x-user-role': user.role }
-    })
-    .then((res) => {
-      setNewsMetrics({
-        articlesToday: res.data.totalArticles,
-        categories: res.data.activeCategories,
-        sources: res.data.sourceCount,
-      });
-    })
-    .catch((err) => {
-      console.error('Dashboard metrics error:', err);
-    });
-  }, []);
-
-  useEffect(() => {
-    axios.get(`http://localhost:5000/api/news?category=${selectedCategory}`, {
-      headers: { 'x-user-role': user.role }
-    })
-    .then((res) => setArticles(res.data))
-    .catch((err) => console.error('News fetch error:', err));
-  }, [selectedCategory]);
-  */
-
-  // Mock articles for now
-
-
-
-  
   useEffect(() => {
     setArticles([
       {
@@ -94,21 +60,11 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    
     <div className="dashboard">
-      
-            {/* Sidebar with visibility toggle */}
-<Sidebar visible={sidebarVisible} onToggle={() => setSidebarVisible((prev) => !prev)} />
+      <Sidebar visible={sidebarVisible} onToggle={() => setSidebarVisible(false)} />
 
-      <button className="hamburger"
-          onClick={() => setSidebarVisible((prev) => !prev)}
-      >
-           ☰
-      </button>
-
-
-      <div className="main">
-        <Header />
+      <div className="main" style={{ marginLeft: sidebarVisible ? '220px' : '0' }}>
+        <Header onToggleSidebar={() => setSidebarVisible(true)} />
 
         <div className="widgets">
           <Widget title="Articles Today" value={newsMetrics.articlesToday} />

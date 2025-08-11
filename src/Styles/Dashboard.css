@@ -9,14 +9,30 @@ body {
   min-height: 100vh;
   overflow: hidden;
   background: linear-gradient(to right, #e0eafc, #cfdef3);
-  padding: 2rem;
 }
 
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 240px;
+  height: 100vh;
+  background-color: #242526;
+  color: white;
+  padding: 20px;
+  box-sizing: border-box;
+  transition: transform 0.3s ease;
+  z-index: 1000;
+ 
+}
 
+.sidebar.hidden {
+  transform: translateX(-100%);
+}
 
-.logo {
-  font-size: 1.5em;
-  margin-bottom: 30px;
+.sidebar.visible {
+  transform: translateX(0);
 }
 
 .sidebar ul {
@@ -29,13 +45,24 @@ body {
   cursor: pointer;
 }
 
+
+.logo {
+  font-size: 1.4em;
+  margin-top: 50px; /* pushes it down */
+  margin-bottom: 30px;
+}
+
+
+/* Main content */
 .main {
   flex: 1;
   padding: 2rem;
-  overflow-y:auto;
+  overflow-y: auto;
   background-color: #f4f5f7;
-  height: 100vh; /* match sidebar height */
+  height: 100vh;
   box-sizing: border-box;
+  margin-left: 220px;
+  transition: margin-left 0.3s ease;
 }
 
 .widgets {
@@ -49,8 +76,10 @@ body {
   border-radius: 8px;
   flex: 1;
   box-shadow: 0 0 10px rgba(0,0,0,0.05);
+   margin-top: 20px;
 }
-/*added on 2025-08-05*/
+
+/* Category switcher */
 .category-switcher {
   margin: 20px 0;
   display: flex;
@@ -70,6 +99,7 @@ body {
   color: white;
 }
 
+/* News feed */
 .news-feed {
   margin-top: 2rem;
   display: grid;
@@ -83,28 +113,23 @@ body {
   background: #f9f9f9;
 }
 
-
-
-.user-logo {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  cursor: pointer;
-}
-
-
-/*header*/
+/* Header */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px;
-  background-color: #f5f5f5;
-    flex-shrink: 0;
+  padding: 12px 24px;
+    background-color: #000; /* black background */
+  color: white; /* white text */
+  position: sticky;
+  top: 0;
+  z-index: 900;
+  border-bottom: 1px solid #ddd;
 }
 
 .header-right {
   display: flex;
+      background-color: #000; /* black background */
   align-items: center;
   gap: 16px;
 }
@@ -117,36 +142,14 @@ body {
   transform: scale(1.1);
 }
 
-/* Sidebar visibility */
-.sidebar {
-  width: 220px;
-  background-color: #242526;
-  color: white;
-  padding: 20px;
-  height: 100vh;
-   transition: transform 0.3s ease;
-  box-sizing: border-box;
-  }
- 
-
-.sidebar.hidden {
-  transform: translateX(-220px);
-}
-
-.hamburger {
-  position: fixed;
-  top: 16px;
-  left: 16px;
-  z-index: 1000;
-  background: #fff;
-  border: none;
-  font-size: 24px;
+.user-logo {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  padding: 8px;
-  border-radius: 4px;
 }
 
+/* Responsive */
 @media (max-width: 768px) {
   .dashboard {
     flex-direction: column;
@@ -154,8 +157,6 @@ body {
 
   .sidebar {
     position: absolute;
-    height: 100%;
-    z-index: 100;
     transform: translateX(-100%);
   }
 
@@ -164,6 +165,83 @@ body {
   }
 
   .main {
+    margin-left: 0;
     padding: 1rem;
   }
 }
+
+/* Hamburger button inside sidebar */
+.hamburger-button {
+  position: fixed;
+  top: 40px;
+  left: 16px;
+  font-size: 28px;
+  background: transparent;
+   color: white; /* white icon */
+  border: none;
+ color: white; /* always white */
+  cursor: pointer;
+  z-index: 1000;
+}
+.hamburger-button:hover {
+  opacity: 0.8; /* keeps it white, just dims slightly */
+}
+
+
+/* When sidebar is visible, place button at right edge of sidebar */
+.hamburger-button.inside {
+  left: 220px; /* sidebar width */
+}
+
+/* When sidebar is hidden, place button at screen edge */
+.hamburger-button.outside {
+  left: 16px;
+}
+
+/* Close (X) button inside sidebar */
+.close-button {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-size: 28px;
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  z-index: 1100;
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+
+.header-title {
+  flex-grow: 1;
+  text-align: center;
+   color: white; /* ensure title is white */;
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #000; /* black background */
+}
+
+.user-info {
+  font-size: 16px;
+  color: #555;
+}
+

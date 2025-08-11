@@ -2,15 +2,23 @@ import React from 'react';
 import '../Styles/Dashboard.css';
 import { useNavigate } from 'react-router-dom';
 
-const Header: React.FC = () => {
+type HeaderProps = {
+  onToggleSidebar: () => void;
+};
+
+const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
   const navigate = useNavigate();
 
   return (
     <header className="header">
-      <h1>News Aggregator</h1>
-      <div className="header-right">
-        {/* Add other header items here if needed */}
+      <div className="header-left">
+        <button className="hamburger-button" onClick={onToggleSidebar}>
+          ☰
+        </button>
+        <h1 className="header-title">News Aggregator</h1>
+      </div>
 
+      <div className="header-right">
         <div className="user-avatar" onClick={() => navigate('/user-dashboard')}>
           <img
             src="/assets/user-icon.png"
@@ -29,4 +37,3 @@ const Header: React.FC = () => {
 };
 
 export default Header;
-
