@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getSavedNews, getHistory } from './api/index';
-import { NewsItem } from './Types/Types';
+import { NewsItem } from './Types/NewsItem';
 import './Styles/UserDashboard.css';
 
 const UserDashboard = () => {

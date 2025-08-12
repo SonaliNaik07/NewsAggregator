@@ -1,26 +1,21 @@
 import React from 'react';
+import { NewsArticle } from '../Types/NewsArticle';
+import { NewsItem } from '../Types/NewsItem';
 
-interface ArticleProps {
-  article: {
-    title: string;
-    description: string;
-    url: string;
-    source?: { name?: string };
-  };
-  onSave: (article: any) => void;
-  onSummarize: (article: any) => void;
+interface NewsCardProps {
+  article: NewsArticle;
+  onSave: (article: NewsArticle) => void;
+  onSummarize: (article: NewsArticle) => void;
 }
 
-const NewsCard: React.FC<ArticleProps> = ({ article, onSave, onSummarize }) => {
+
+const NewsCard: React.FC<NewsCardProps> = ({ article, onSave, onSummarize }) => {
   return (
     <div className="news-card">
-      <h3>{article.title}</h3>
+      <h2>{article.title}</h2>
       <p>{article.description}</p>
-      <a href={article.url} target="_blank" rel="noopener noreferrer">Read Full Article</a>
-      <div className="buttons">
-        <button onClick={() => onSummarize(article)}>Summarize</button>
-        <button onClick={() => onSave(article)}>Save</button>
-      </div>
+      <button onClick={() => onSave(article)}>Save</button>
+      <button onClick={() => onSummarize(article)}>Summarize</button>
     </div>
   );
 };

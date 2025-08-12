@@ -1,3 +1,4 @@
+// src/types/NewsItem.ts
 export interface NewsItem {
   id: string;
   title: string;

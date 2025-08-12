@@ -24,7 +24,6 @@ body {
   box-sizing: border-box;
   transition: transform 0.3s ease;
   z-index: 1000;
- 
 }
 
 .sidebar.hidden {
@@ -45,13 +44,11 @@ body {
   cursor: pointer;
 }
 
-
 .logo {
   font-size: 1.4em;
-  margin-top: 50px; /* pushes it down */
+  margin-top: 50px;
   margin-bottom: 30px;
 }
-
 
 /* Main content */
 .main {
@@ -76,7 +73,7 @@ body {
   border-radius: 8px;
   flex: 1;
   box-shadow: 0 0 10px rgba(0,0,0,0.05);
-   margin-top: 20px;
+  margin-top: 20px;
 }
 
 /* Category switcher */
@@ -119,19 +116,48 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 12px 24px;
-    background-color: #000; /* black background */
-  color: white; /* white text */
+  background-color: #000;
+  color: white;
   position: sticky;
   top: 0;
   z-index: 900;
   border-bottom: 1px solid #ddd;
 }
 
+.header-left,
 .header-right {
+  flex: 0 0 auto;
   display: flex;
-      background-color: #000; /* black background */
   align-items: center;
   gap: 16px;
+}
+
+.header-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.search-input {
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  background-color: #fff;
+  color: #333;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  transition: box-shadow 0.2s ease;
+  width: 100%;
+  max-width: 400px;
+}
+
+.search-input::placeholder {
+  color: #aaa;
+}
+
+.search-input:focus {
+  box-shadow: 0 0 8px rgba(0,0,0,0.2);
 }
 
 .user-avatar img {
@@ -168,6 +194,14 @@ body {
     margin-left: 0;
     padding: 1rem;
   }
+
+  .header-center {
+    justify-content: flex-start;
+  }
+
+  .search-input {
+    max-width: 100%;
+  }
 }
 
 /* Hamburger button inside sidebar */
@@ -177,23 +211,20 @@ body {
   left: 16px;
   font-size: 28px;
   background: transparent;
-   color: white; /* white icon */
+  color: white;
   border: none;
- color: white; /* always white */
   cursor: pointer;
   z-index: 1000;
 }
+
 .hamburger-button:hover {
-  opacity: 0.8; /* keeps it white, just dims slightly */
+  opacity: 0.8;
 }
 
-
-/* When sidebar is visible, place button at right edge of sidebar */
 .hamburger-button.inside {
-  left: 220px; /* sidebar width */
+  left: 220px;
 }
 
-/* When sidebar is hidden, place button at screen edge */
 .hamburger-button.outside {
   left: 16px;
 }
@@ -223,21 +254,13 @@ body {
   z-index: 1000;
 }
 
-
 .header-title {
   flex-grow: 1;
   text-align: center;
-   color: white; /* ensure title is white */;
+  color: white;
   font-size: 20px;
   font-weight: bold;
   margin: 0;
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background-color: #000; /* black background */
 }
 
 .user-info {
@@ -245,3 +268,34 @@ body {
   color: #555;
 }
 
+.news-card button {
+  padding: 8px 14px;
+  margin-right: 10px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+/* Save button */
+.news-card button:first-of-type {
+  background-color: #28a745; /* green */
+  color: white;
+}
+
+.news-card button:first-of-type:hover {
+  background-color: #218838;
+  transform: scale(1.05);
+}
+
+/* Summarize button */
+.news-card button:last-of-type {
+  background-color: #007bff; /* blue */
+  color: white;
+}
+
+.news-card button:last-of-type:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}

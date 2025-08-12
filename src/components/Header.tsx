@@ -4,9 +4,10 @@ import { useNavigate } from 'react-router-dom';
 
 type HeaderProps = {
   onToggleSidebar: () => void;
+  onSearch: (term: string) => void;
 };
 
-const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
+const Header: React.FC<HeaderProps> = ({ onToggleSidebar, onSearch }) => {
   const navigate = useNavigate();
 
   return (
@@ -19,6 +20,12 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
       </div>
 
       <div className="header-right">
+        <input
+          type="text"
+          placeholder="Search articles..."
+          className="search-input"
+          onChange={(e) => onSearch(e.target.value)}
+        />
         <div className="user-avatar" onClick={() => navigate('/user-dashboard')}>
           <img
             src="/assets/user-icon.png"
