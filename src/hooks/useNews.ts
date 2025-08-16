@@ -1,33 +1,30 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-interface NewsArticle {
-  title: string;
-  url: string;
-  description?: string;
-  urlToImage?: string;
-  source?: { name: string };
-}
-
-export function useNews(country: string = 'in') {
-  const [articles, setArticles] = useState<NewsArticle[]>([]);
+export const useNews = () => {
+  const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchNews = async () => {
-      const apiKey = import.meta.env.VITE_NEWS_API_KEY;
-      try {
-        const res = await fetch(`https://newsapi.org/v2/top-headlines?country=${country}&apiKey=${apiKey}`);
-        const data = await res.json();
-        setArticles(data.articles);
-      } catch (err) {
-        console.error('Error fetching news:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
 
+  const fetchNews = async () => {
+    try {
+      const res = await fetch('/api/news/personalized', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ interests: user.interests }),
+      });
+      const data = await res.json();
+      setArticles(data);
+    } catch (err) {
+      console.error('Failed to fetch personalized news:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchNews();
-  }, [country]);
+  }, []);
 
   return { articles, loading };
-}
+};

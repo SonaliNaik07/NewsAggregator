@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
+const { getArticles, summarizeArticle } = require('../controllers/articlesController');
 const Article = require('../models/Article');
 
-// Create article
+// 🔹 Create a new article manually (not from summarizer)
 router.post('/', async (req, res) => {
   try {
     const article = new Article(req.body);
@@ -13,10 +14,10 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Get all articles
-router.get('/', async (req, res) => {
-  const articles = await Article.find();
-  res.json(articles);
-});
+// 🔹 Get all articles from MongoDB
+router.get('/', getArticles);
+
+// 🔹 Summarize external article and optionally save
+router.post('/summarize', summarizeArticle);
 
 module.exports = router;

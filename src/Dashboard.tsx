@@ -29,22 +29,46 @@ const Dashboard: React.FC = () => {
   const user = JSON.parse(localStorage.getItem('user') || JSON.stringify(defaultUser));
   const [sidebarVisible, setSidebarVisible] = useState(true);
 
-  useEffect(() => {
-    setArticles([
-      {
-        title: 'AI Revolution in 2025',
-        description: 'Artificial Intelligence is transforming industries...',
-        url: 'https://example.com/ai-news',
-        source: { name: 'TechDaily' }
-      },
-      {
-        title: 'Sports Highlights of the Week',
-        description: 'Catch up on the biggest moments in sports...',
-        url: 'https://example.com/sports-news',
-        source: { name: 'SportsBuzz' }
-      }
-    ]);
-  }, []);
+useEffect(() => {
+  const fetchNews = async () => {
+    try {
+      const response = await axios.get(
+        `https://newsapi.org/v2/top-headlines`,
+        {
+          params: {
+            category: selectedCategory,
+            country: 'us',
+            pageSize: 10,
+            apiKey: 'fde901c97416462896c9dbad77cb93ac', // 🔐 Replace with your key
+          },
+        }
+      );
+
+      const rawArticles = response.data.articles;
+
+      const mappedArticles: NewsArticle[] = rawArticles.map((item: any) => ({
+        title: item.title,
+        description: item.description,
+        url: item.url,
+        urlToImage: item.urlToImage,
+        source: { name: item.source?.name || 'Unknown' },
+        summary: item.description, // You can later replace this with AI-generated summary
+      }));
+
+      setArticles(mappedArticles);
+      setNewsMetrics({
+        articlesToday: rawArticles.length.toString(),
+        categories: '7 active',
+        sources: 'Multiple',
+      });
+    } catch (error) {
+      console.error('Error fetching news:', error);
+    }
+  };
+
+  fetchNews();
+}, [selectedCategory]);
+
 
   const handleSave = async (article: NewsArticle) => {
     alert('Saved to your dashboard (mock)');

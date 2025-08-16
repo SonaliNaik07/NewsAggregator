@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import CategorySelect from './components/CategorySelect';
-import './styles/Register.css';
+import './Styles/Register.css';
 
 const Register: React.FC = () => {
-  // 🔐 Form state for user input
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -13,46 +12,61 @@ const Register: React.FC = () => {
     categories: [] as string[],
   });
 
-  // 🛠️ Handle input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // 🗞️ Handle category selection (max 1)
-const handleCategories = (selected: string[]) => {
-  if (selected.length <= 1) {
-    setFormData({ ...formData, categories: selected });
-  }
-};
+  const handleCategories = (selected: string[]) => {
+    if (selected.length <= 1) {
+      setFormData({ ...formData, categories: selected });
+    }
+  };
 
-
-  // 💾 Submit handler
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // ✅ Confirm passwords match
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords do not match!");
       return;
     }
 
-    // ✅ Must select 1–2 categories
     if (formData.categories.length === 0) {
       alert("Please select at least one news category.");
       return;
     }
 
-    console.log("Registered user:", formData);
-    // Future: Send formData to backend + notifications setup
+    try {
+      const res = await fetch('http://localhost:5000/api/users/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          role: formData.role,
+          categories: formData.categories,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (data.error) {
+        alert(data.error);
+      } else {
+        alert('Registration successful!');
+        window.location.href = '/login';
+      }
+    } catch (err) {
+      console.error('Registration error:', err);
+      alert('Something went wrong during registration.');
+    }
   };
 
   return (
     <div className="register-wrapper">
-      {/* 📋 Registration Form */}
       <form className="register-card" onSubmit={handleSubmit}>
         <h2 className="form-title">Create Your PressDesk Account</h2>
 
-        {/* 👤 Name */}
         <input
           type="text"
           name="name"
@@ -63,7 +77,6 @@ const handleCategories = (selected: string[]) => {
           required
         />
 
-        {/* 📧 Email */}
         <input
           type="email"
           name="email"
@@ -74,7 +87,6 @@ const handleCategories = (selected: string[]) => {
           required
         />
 
-        {/* 🔐 Password */}
         <input
           type="password"
           name="password"
@@ -85,7 +97,6 @@ const handleCategories = (selected: string[]) => {
           required
         />
 
-        {/* 🔁 Confirm Password */}
         <input
           type="password"
           name="confirmPassword"
@@ -96,7 +107,6 @@ const handleCategories = (selected: string[]) => {
           required
         />
 
-        {/* 🎭 Role Selection */}
         <select
           name="role"
           value={formData.role}
@@ -110,13 +120,10 @@ const handleCategories = (selected: string[]) => {
           <option value="General">General</option>
         </select>
 
-        {/* 🗞️ Category Selector (only one allowed) */}
         <CategorySelect selected={formData.categories} onSelect={handleCategories} />
 
-        {/* 🖱️ Submit Button */}
         <button type="submit" className="register-button">Register</button>
 
-        {/* 🔗 Link to Login */}
         <p className="login-link">
           Already have an account? <a href="/login">Log in</a>
         </p>

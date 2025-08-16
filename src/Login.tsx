@@ -1,41 +1,71 @@
-
-import React from 'react';
-import InputField from './components/InputField';
-import './styles/index.css';
-import './Register'
+import React, { useState } from 'react';
+import './Styles/index.css';
 
 const Login: React.FC = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = async () => {
+    try {
+      const res = await fetch('http://localhost:5000/api/users/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const user = await res.json();
+
+      if (user.error) {
+        alert(user.error);
+      } else {
+        localStorage.setItem('user', JSON.stringify(user));
+        window.location.href = '/dashboard';
+      }
+    } catch (err) {
+      console.error('Login error:', err);
+      alert('Login failed. Please try again.');
+    }
+  };
+
   return (
     <div className="login-wrapper">
       <div className="login-card">
         <h2 className="form-title">LOG IN</h2>
         <p className="tagline">Stay informed. Stay relevant.</p>
 
-        <form className="login-form">
-          <InputField />
+        <form className="login-form" onSubmit={(e) => e.preventDefault()}>
+          <div className="input-wrapper">
+            <input
+              type="email"
+              placeholder="Email"
+              className="input-field"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <i className="material-symbols-outlined">mail</i>
+          </div>
 
           <div className="input-wrapper">
             <input
               type="password"
               placeholder="Password"
               className="input-field"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
             <i className="material-symbols-outlined">lock</i>
           </div>
 
           <a href="#" className="forgot-pass-link">Forgot Password?</a>
-          <button className="login-button" type="button" onClick={() => {
-            localStorage.setItem('user', JSON.stringify({
-              id: 'demo123',
-              role: 'admin',
-              interests: ['technology', 'sports', 'health']
-            }));
-          }}>Sign in</button>
+          <button className="login-button" type="button" onClick={handleLogin}>
+            Sign in
+          </button>
         </form>
 
         <p className="signup-text">
-          First time here? <a href="./register">Create your account</a>
+          First time here? <a href="/register">Create your account</a>
         </p>
       </div>
     </div>
