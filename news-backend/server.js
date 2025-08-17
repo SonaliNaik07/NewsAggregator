@@ -1,6 +1,7 @@
 // server.js
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
 require('dotenv').config();
 require('./db/connection'); // ✅ MongoDB connection
 
@@ -10,6 +11,7 @@ const userRoutes = require('./routes/users'); // ✅ includes register/login/int
 
 const app = express();
 app.use(cors());
+app.use(helmet()); // 👈 added for security headers
 app.use(express.json());
 
 // ✅ Route setup

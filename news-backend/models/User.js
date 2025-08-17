@@ -1,5 +1,14 @@
-// models/User.js
 const mongoose = require('mongoose');
+
+const savedArticleSchema = new mongoose.Schema({
+  title: String,
+  description: String,
+  url: String,
+  urlToImage: String,
+ source: String, // ✅ Must be a string
+ publishedAt: String,
+});
+
 
 const userSchema = new mongoose.Schema({
   name: String,
@@ -7,7 +16,16 @@ const userSchema = new mongoose.Schema({
   password: String,
   role: String,
   categories: [String],
-  interests: [String], // optional
+  interests: {
+    type: [String],
+    default: [],
+  },
+savedNews: {
+  type: [savedArticleSchema], // ✅ Use the defined schema
+  default: [],
+},
+}, {
+  timestamps: true // 👈 adds createdAt and updatedAt automatically
 });
 
 module.exports = mongoose.model('User', userSchema);

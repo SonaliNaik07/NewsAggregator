@@ -7,6 +7,7 @@ import './Styles/Dashboard.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { NewsArticle } from './Types/NewsArticle'; // ✅ Use shared type
+import { saveArticle } from './api/index';
 
 const Dashboard: React.FC = () => {
   const [newsMetrics, setNewsMetrics] = useState({
@@ -70,9 +71,18 @@ useEffect(() => {
 }, [selectedCategory]);
 
 
-  const handleSave = async (article: NewsArticle) => {
-    alert('Saved to your dashboard (mock)');
-  };
+const handleSave = async (article: NewsArticle) => {
+  const result = await saveArticle(article);
+
+  if (result === 'saved') {
+    alert('Article saved successfully!');
+  } else if (result === 'duplicate') {
+    alert('This article is already saved.');
+  } else {
+    alert('Failed to save article.');
+  }
+};
+
 
   const handleSummarize = async (article: NewsArticle) => {
     const summary = article.description
@@ -101,17 +111,21 @@ useEffect(() => {
           <Widget title="News Sources" value={newsMetrics.sources} />
         </div>
 
-        <div className="category-switcher">
-          {user.interests.map((cat: string) => (
-            <button
-              key={cat}
-              className={cat === selectedCategory ? 'active' : ''}
-              onClick={() => setSelectedCategory(cat)}
-            >
-              {cat.charAt(0).toUpperCase() + cat.slice(1)}
-            </button>
-          ))}
-        </div>
+<div className="category-switcher">
+  {user?.interests?.length > 0 ? (
+    user.interests.map((cat: string) => (
+      <button
+        key={cat}
+        className={cat === selectedCategory ? 'active' : ''}
+        onClick={() => setSelectedCategory(cat)}
+      >
+        {cat.charAt(0).toUpperCase() + cat.slice(1)}
+      </button>
+    ))
+  ) : (
+    <p>No interests found. Please update your profile.</p>
+  )}
+</div>
 
         <div className="news-feed">
           {filteredArticles.map((article, index) => (

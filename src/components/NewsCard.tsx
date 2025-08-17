@@ -5,15 +5,29 @@ interface NewsCardProps {
   article: NewsArticle;
   onSave: (article: NewsArticle) => void;
   onSummarize: (article: NewsArticle) => void;
+  summary?: string; // 👈 optional prop for displaying summary
 }
 
-const NewsCard: React.FC<NewsCardProps> = ({ article, onSave, onSummarize }) => {
+const NewsCard: React.FC<NewsCardProps> = ({ article, onSave, onSummarize, summary }) => {
   return (
     <div className="news-card">
       <h3>{article.title}</h3>
       <p>{article.description}</p>
-      <button onClick={() => onSave(article)}>Save</button>
-      <button onClick={() => onSummarize(article)}>Summarize</button>
+
+      <div className="news-actions">
+        <button onClick={() => onSave(article)}>Save</button>
+        <button onClick={() => onSummarize(article)}>Summarize</button>
+        <a href={article.url} target="_blank" rel="noopener noreferrer">
+          <button>Read Full Article</button>
+        </a>
+      </div>
+
+      {summary && (
+        <div className="summary-box">
+          <h4>Summary:</h4>
+          <p>{summary}</p>
+        </div>
+      )}
     </div>
   );
 };

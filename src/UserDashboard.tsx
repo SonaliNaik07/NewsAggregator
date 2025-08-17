@@ -10,11 +10,10 @@ const UserDashboard = () => {
   const user = JSON.parse(localStorage.getItem('user') || '{}');
 
 useEffect(() => {
-  if (user?.id) {
-    getSavedNews(user.id).then(setSavedNews);
-    getHistory(user.id).then(setHistory);
-  }
-}, [user?.id]);
+  getSavedNews().then(setSavedNews);
+  getHistory().then(setHistory);
+}, []);
+
 
 
   return (
