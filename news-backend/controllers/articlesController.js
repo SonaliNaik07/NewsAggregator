@@ -1,50 +1,47 @@
-const Article = require('../models/Article');
-const axios = require('axios');
-const { JSDOM } = require('jsdom');
-const { Readability } = require('@mozilla/readability');
+// 🔹 Fetch personalized articles from NewsAPI
+const getPersonalizedNews = async (req, res) => {
+  const { interests } = req.body;
+  const NEWS_API_KEY = process.env.NEWS_API_KEY;
 
-// 🔹 Fetch articles from MongoDB
-const getArticles = async (req, res) => {
-  try {
-    const articles = await Article.find().sort({ createdAt: -1 });
-    res.json(articles);
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch articles' });
+  if (!interests || interests.length === 0) {
+    return res.status(400).json({ error: 'No interests provided' });
   }
-};
 
-// 🔹 Dummy AI summarizer (replace with real API later)
-const summarizeWithAI = async (text) => {
-  return text.slice(0, 200) + '...'; // Truncate for now
-};
-
-// 🔹 Summarize external article and optionally save to DB
-const summarizeArticle = async (req, res) => {
-  const { url, save } = req.body; // Optional `save` flag
   try {
-    const html = await axios.get(url);
-    const dom = new JSDOM(html.data, { url });
-    const reader = new Readability(dom.window.document);
-    const article = reader.parse();
-    const summary = await summarizeWithAI(article?.textContent || '');
+    const allArticles = [];
 
-    if (save) {
-      const newArticle = new Article({
-        title: article?.title || 'Untitled',
-        url,
-        summary,
+    for (const category of interests) {
+      const response = await axios.get('https://newsapi.org/v2/top-headlines', {
+        params: {
+          category,
+          country: 'us',
+          apiKey: NEWS_API_KEY,
+          pageSize: 5,
+        },
       });
-      await newArticle.save();
+
+      const articles = response.data.articles.map((item) => ({
+        title: item.title,
+        description: item.description,
+        url: item.url,
+        urlToImage: item.urlToImage,
+        source: {
+          name: item.source?.name || 'Unknown',
+        },
+      }));
+
+      allArticles.push(...articles);
     }
 
-    res.json({ summary });
+    res.json(allArticles);
   } catch (err) {
-    console.error('Summarization error:', err);
-    res.status(500).json({ error: 'Failed to summarize article' });
+    console.error('News fetch error:', err.message);
+    res.status(500).json({ error: 'Failed to fetch personalized news' });
   }
 };
 
 module.exports = {
   getArticles,
   summarizeArticle,
+  getPersonalizedNews, // ✅ Add this
 };

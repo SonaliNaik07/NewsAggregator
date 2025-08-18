@@ -24,7 +24,12 @@ savedNews: {
   type: [savedArticleSchema], // ✅ Use the defined schema
   default: [],
 },
-}, {
+  lastNotified: {
+  type: Date,
+  default: null,
+}
+},
+ {
   timestamps: true // 👈 adds createdAt and updatedAt automatically
 });
 

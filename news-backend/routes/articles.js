@@ -1,19 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const { getArticles, summarizeArticle } = require('../controllers/articlesController');
-const Article = require('../models/Article');
+const {
+  getArticles,
+  summarizeArticle,
+  getPersonalizedNews,
+} = require('../controllers/articlesController');
 
-// 🔹 Create a new article manually
-router.post('/', async (req, res) => {
-  try {
-    const article = new Article(req.body);
-    await article.save();
-    res.status(201).json(article);
-  } catch (err) {
-    console.error('Article creation error:', err.message);
-    res.status(400).json({ error: err.message });
-  }
-});
+// 🔹 Personalized news
+router.post('/personalized', getPersonalizedNews);
 
 // 🔹 Get all articles
 router.get('/', getArticles);
