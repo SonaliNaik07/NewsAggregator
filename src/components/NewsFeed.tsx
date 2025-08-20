@@ -1,44 +1,39 @@
 // src/components/NewsFeed.tsx
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import { useNews } from '../hooks/useNews';
 import NewsSection from './NewsSection';
 import { NewsArticle } from '../Types/NewsArticle';
 
 function NewsFeed() {
-  const { articles, loading } = useNews();
+  const [savedArticles, setSavedArticles] = useState<NewsArticle[]>([]);
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
 
   const handleSave = async (article: NewsArticle) => {
     try {
-      const res = await axios.post('/api/articles/save', {
+      const res = await axios.post(`/api/articles/save/${user._id}`, {
         title: article.title,
+        description: article.description,
         url: article.url,
-        category: 'general', // or derive from context
-        description: article.description || '',
+        urlToImage: article.urlToImage,
+        source: article.source?.name || 'Unknown',
+        publishedAt: article.publishedAt,
       });
+
       console.log('✅ Saved:', res.data);
+      setSavedArticles((prev) => [...prev, article]); // ✅ Update local state
     } catch (err: any) {
       console.error('❌ Save failed:', err.response?.data?.error || err.message);
     }
   };
 
   const handleSummarize = async (article: NewsArticle) => {
-    try {
-      const res = await axios.post('/api/articles/summarize', {
-        url: article.url
-      });
-      console.log('🧠 Summary:', res.data.summary);
-    } catch (err: any) {
-      console.error('❌ Summarize failed:', err.response?.data?.error || err.message);
-    }
+    // Your summarize logic here
   };
-
-  if (loading) return <p>Loading news...</p>;
 
   return (
     <NewsSection
       title="📰 Top Headlines"
-      articles={articles}
+      articles={savedArticles} // or your fetched articles
       onSave={handleSave}
       onSummarize={handleSummarize}
     />

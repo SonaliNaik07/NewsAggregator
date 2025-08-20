@@ -4,6 +4,8 @@ import Login from './Login';
 import Register from './Register';
 import Dashboard from './Dashboard';
 import UserDashboard from './UserDashboard';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App: React.FC = () => {
   return (

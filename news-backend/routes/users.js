@@ -3,6 +3,11 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const Article = require('../models/Article'); // ✅ Add this line
+const { saveArticleToUser } = require('../controllers/articlesController');
+
+// 🔹 Save article to user's saved list
+router.post('/users/:userId/save', saveArticleToUser);
 
 // 🔐 JWT Auth Middleware
 function authenticateToken(req, res, next) {
@@ -38,7 +43,7 @@ router.post('/register', async (req, res) => {
       password: hashedPassword,
       role,
       categories,
-      interests: categories, // Initialize interests with selected categories
+      interests: categories,
     });
 
     await newUser.save();
@@ -85,38 +90,22 @@ router.post('/interests', authenticateToken, async (req, res) => {
   }
 });
 
-// 🔹 Save user Articles (with transformation)
-router.post('/save', authenticateToken, async (req, res) => {
-  const userId = req.user.id;
-  const article = req.body;
-
-  const transformedArticle = {
-    ...article,
-    source: article.source?.name || article.source || 'Unknown',
-  };
-
+// 🔹 Save article to global Article collection
+router.post('/saveArticle', async (req, res) => {
   try {
-    const user = await User.findById(userId);
+    const { title, description, url, urlToImage, publishedAt, source } = req.body;
 
-    const alreadySaved = user.savedNews.some(
-      (a) => a.url === transformedArticle.url
-    );
+    const existing = await Article.findOne({ url });
+    if (existing) return res.status(409).json({ message: 'Already saved' });
 
-    if (alreadySaved) {
-      return res.status(409).json({ error: 'Article already saved.' });
-    }
+    const newArticle = new Article({ title, description, url, urlToImage, publishedAt, source });
+    await newArticle.save();
 
-    await User.findByIdAndUpdate(userId, {
-      $push: { savedNews: transformedArticle },
-    });
-
-    res.status(200).json({ message: 'Article saved.' });
+    res.status(201).json({ message: 'Article saved successfully' });
   } catch (err) {
     console.error('Save error:', err);
-    res.status(500).json({ error: 'Failed to save article.' });
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
-
-
 
 module.exports = router;

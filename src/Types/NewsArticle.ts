@@ -1,10 +1,13 @@
+// src/Types/NewsArticle.ts
+
 export interface NewsArticle {
   title: string;
+  description: string;
   url: string;
-  description?: string;
   urlToImage?: string;
-  source?: {
+  source: {
     name: string;
   };
-  summary?:string
+  publishedAt?: string;
 }
+

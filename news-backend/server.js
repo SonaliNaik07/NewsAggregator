@@ -1,6 +1,7 @@
 // server.js
 require('dotenv').config();
 require('./db/connection'); // ✅ MongoDB connection
+require('./jobs/scheduler');
 
 const express = require('express');
 const cors = require('cors');
@@ -10,7 +11,8 @@ const { notifyUsers } = require('./controllers/notificationController'); // ✅ 
 
 const articleRoutes = require('./routes/articles');
 const summarizeRoute = require('./routes/summarizeRoute');
-const userRoutes = require('./routes/users'); // ✅ includes register/login/interests
+const userRoutes = require('./routes/users');
+const notifyRoutes = require('./routes/notify');
 
 const app = express();
 
@@ -22,8 +24,8 @@ app.use(express.json());
 // ✅ Route setup
 app.use('/api/articles', articleRoutes);
 app.use('/api/summarize', summarizeRoute);
-app.use('/api/users', userRoutes); // 👈 includes /register and /interests
-app.use('/api/articles', require('./routes/articles'));
+app.use('/api/users', userRoutes);
+app.use('/api/notify', notifyRoutes);
 
 // ✅ Server start
 const PORT = process.env.PORT || 5000;
@@ -41,6 +43,3 @@ cron.schedule('0 8 * * *', async () => {
     console.error('❌ Notification error:', err.message);
   }
 });
-
-const notifyRoutes = require('./routes/notify');
-app.use('/api/notify', notifyRoutes);

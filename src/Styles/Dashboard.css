@@ -299,3 +299,14 @@ body {
   background-color: #0056b3;
   transform: scale(1.05);
 }
+
+
+.saved-feed {
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: #f9f9f9;
+  border-top: 2px solid #ddd;
+}
+.saved-feed h2 {
+  margin-bottom: 1rem;
+}

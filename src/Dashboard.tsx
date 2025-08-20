@@ -6,8 +6,10 @@ import NewsCard from './components/NewsCard';
 import './Styles/Dashboard.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { NewsArticle } from './Types/NewsArticle'; // ✅ Use shared type
-import { saveArticle } from './api/index';
+import { NewsArticle } from './Types/NewsArticle';
+import { saveArticleToUser } from './api/index';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Dashboard: React.FC = () => {
   const [newsMetrics, setNewsMetrics] = useState({
@@ -18,71 +20,115 @@ const Dashboard: React.FC = () => {
 
   const [selectedCategory, setSelectedCategory] = useState('general');
   const [articles, setArticles] = useState<NewsArticle[]>([]);
+  const [savedArticles, setSavedArticles] = useState<NewsArticle[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
 
   const defaultUser = {
     id: 'demo-user',
     role: 'guest',
-    interests: ['general', 'technology', 'sports']
+    interests: ['general', 'technology', 'sports'],
   };
 
   const user = JSON.parse(localStorage.getItem('user') || JSON.stringify(defaultUser));
   const [sidebarVisible, setSidebarVisible] = useState(true);
 
-useEffect(() => {
-  const fetchNews = async () => {
-    try {
-      const response = await axios.get(
-        `https://newsapi.org/v2/top-headlines`,
-        {
+  // ✅ Fetch top headlines
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const response = await axios.get(`https://newsapi.org/v2/top-headlines`, {
           params: {
             category: selectedCategory,
             country: 'us',
             pageSize: 10,
-            apiKey: 'fde901c97416462896c9dbad77cb93ac', // 🔐 Replace with your key
+            apiKey: 'fde901c97416462896c9dbad77cb93ac',
           },
-        }
-      );
+        });
 
-      const rawArticles = response.data.articles;
+        const rawArticles = response.data.articles;
 
-      const mappedArticles: NewsArticle[] = rawArticles.map((item: any) => ({
-        title: item.title,
-        description: item.description,
-        url: item.url,
-        urlToImage: item.urlToImage,
-        source: { name: item.source?.name || 'Unknown' },
-        summary: item.description, // You can later replace this with AI-generated summary
-      }));
+        const mappedArticles: NewsArticle[] = rawArticles.map((item: any) => ({
+          title: item.title,
+          description: item.description,
+          url: item.url,
+          urlToImage: item.urlToImage,
+          source: { name: item.source?.name || 'Unknown' },
+          summary: item.description,
+          publishedAt: item.publishedAt,
+        }));
 
-      setArticles(mappedArticles);
-      setNewsMetrics({
-        articlesToday: rawArticles.length.toString(),
-        categories: '7 active',
-        sources: 'Multiple',
-      });
+        setArticles(mappedArticles);
+        setNewsMetrics({
+          articlesToday: rawArticles.length.toString(),
+          categories: '7 active',
+          sources: 'Multiple',
+        });
+      } catch (error) {
+        console.error('Error fetching news:', error);
+      }
+    };
+
+    fetchNews();
+  }, [selectedCategory]);
+
+  // ✅ Fetch saved articles
+  useEffect(() => {
+    const fetchSavedArticles = async () => {
+      try {
+        const res = await axios.get(`/api/users/${user.id}/saved`);
+        setSavedArticles(res.data.savedNews);
+      } catch (err) {
+        console.error('Error fetching saved articles:', err);
+      }
+    };
+
+    fetchSavedArticles();
+  }, []);
+
+  // ✅ Save article with toast feedback
+  const handleSave = async (article: NewsArticle) => {
+    const userId = user.id;
+
+    const formattedArticle = {
+      ...article,
+      source: { name: article.source?.name || 'Unknown' },
+    };
+
+    try {
+      const status = await saveArticleToUser(userId, formattedArticle);
+
+      switch (status) {
+        case 'saved':
+          toast.success('✅ Article saved!', {
+            position: 'top-right',
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          });
+          break;
+        case 'duplicate':
+          toast.info('ℹ️ Already saved.', {
+            position: 'top-right',
+            autoClose: 3000,
+          });
+          break;
+        default:
+          toast.error('❌ Failed to save article.', {
+            position: 'top-right',
+            autoClose: 3000,
+          });
+      }
     } catch (error) {
-      console.error('Error fetching news:', error);
+      console.error('Save error:', error);
+      toast.error('❌ Save failed due to network or server issue.', {
+        position: 'top-right',
+        autoClose: 3000,
+      });
     }
   };
-
-  fetchNews();
-}, [selectedCategory]);
-
-
-const handleSave = async (article: NewsArticle) => {
-  const result = await saveArticle(article);
-
-  if (result === 'saved') {
-    alert('Article saved successfully!');
-  } else if (result === 'duplicate') {
-    alert('This article is already saved.');
-  } else {
-    alert('Failed to save article.');
-  }
-};
-
 
   const handleSummarize = async (article: NewsArticle) => {
     const summary = article.description
@@ -111,23 +157,25 @@ const handleSave = async (article: NewsArticle) => {
           <Widget title="News Sources" value={newsMetrics.sources} />
         </div>
 
-<div className="category-switcher">
-  {user?.interests?.length > 0 ? (
-    user.interests.map((cat: string) => (
-      <button
-        key={cat}
-        className={cat === selectedCategory ? 'active' : ''}
-        onClick={() => setSelectedCategory(cat)}
-      >
-        {cat.charAt(0).toUpperCase() + cat.slice(1)}
-      </button>
-    ))
-  ) : (
-    <p>No interests found. Please update your profile.</p>
-  )}
-</div>
+        <div className="category-switcher">
+          {user?.interests?.length > 0 ? (
+            user.interests.map((cat: string) => (
+              <button
+                key={cat}
+                className={cat === selectedCategory ? 'active' : ''}
+                onClick={() => setSelectedCategory(cat)}
+              >
+                {cat.charAt(0).toUpperCase() + cat.slice(1)}
+              </button>
+            ))
+          ) : (
+            <p>No interests found. Please update your profile.</p>
+          )}
+        </div>
 
+        {/* ✅ Top Headlines */}
         <div className="news-feed">
+          <h2>📰 Top Headlines</h2>
           {filteredArticles.map((article, index) => (
             <NewsCard
               key={index}
@@ -137,6 +185,9 @@ const handleSave = async (article: NewsArticle) => {
             />
           ))}
         </div>
+
+        {/* ✅ Toast Container for Notifications */}
+        <ToastContainer />
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import React from 'react';
 import { NewsArticle } from '../Types/NewsArticle';
+import '../Styles/NewsCard.css'; // Make sure this path matches your folder structure
 
 interface NewsCardProps {
   article: NewsArticle;
@@ -11,6 +12,17 @@ interface NewsCardProps {
 const NewsCard: React.FC<NewsCardProps> = ({ article, onSave, onSummarize, summary }) => {
   return (
     <div className="news-card">
+      {/* ✅ Image section */}
+      {article.urlToImage ? (
+        <img
+          src={article.urlToImage}
+          alt={article.title}
+          className="news-image"
+        />
+      ) : (
+        <div className="image-placeholder">No Image Available</div>
+      )}
+
       <h3>{article.title}</h3>
       <p>{article.description}</p>
 

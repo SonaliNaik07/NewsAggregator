@@ -5,9 +5,12 @@ const savedArticleSchema = new mongoose.Schema({
   description: String,
   url: String,
   urlToImage: String,
- source: String, // ✅ Must be a string
- publishedAt: String,
+  source: {
+    name: { type: String, required: true }
+  },
+  publishedAt: String,
 });
+
 
 
 const userSchema = new mongoose.Schema({
