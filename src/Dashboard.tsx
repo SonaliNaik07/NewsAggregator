@@ -4,6 +4,7 @@ import Header from './components/Header';
 import Widget from './components/Widget';
 import NewsCard from './components/NewsCard';
 import './Styles/Dashboard.css';
+import './Styles/UserDashboard.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { NewsArticle } from './Types/NewsArticle';
@@ -19,28 +20,28 @@ const Dashboard: React.FC = () => {
   });
 
   const [selectedCategory, setSelectedCategory] = useState('general');
+  const [selectedCountry, setSelectedCountry] = useState('us');
   const [articles, setArticles] = useState<NewsArticle[]>([]);
   const [savedArticles, setSavedArticles] = useState<NewsArticle[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [sidebarVisible, setSidebarVisible] = useState(true);
   const navigate = useNavigate();
 
   const defaultUser = {
     id: 'demo-user',
     role: 'guest',
-    interests: ['general', 'technology', 'sports'],
+    interests: [],
   };
 
   const user = JSON.parse(localStorage.getItem('user') || JSON.stringify(defaultUser));
-  const [sidebarVisible, setSidebarVisible] = useState(true);
 
-  // ✅ Fetch top headlines
   useEffect(() => {
     const fetchNews = async () => {
       try {
         const response = await axios.get(`https://newsapi.org/v2/top-headlines`, {
           params: {
             category: selectedCategory,
-            country: 'us',
+            country: selectedCountry,
             pageSize: 10,
             apiKey: 'fde901c97416462896c9dbad77cb93ac',
           },
@@ -70,9 +71,8 @@ const Dashboard: React.FC = () => {
     };
 
     fetchNews();
-  }, [selectedCategory]);
+  }, [selectedCategory, selectedCountry]);
 
-  // ✅ Fetch saved articles
   useEffect(() => {
     const fetchSavedArticles = async () => {
       try {
@@ -86,7 +86,6 @@ const Dashboard: React.FC = () => {
     fetchSavedArticles();
   }, []);
 
-  // ✅ Save article with toast feedback
   const handleSave = async (article: NewsArticle) => {
     const userId = user.id;
 
@@ -100,26 +99,13 @@ const Dashboard: React.FC = () => {
 
       switch (status) {
         case 'saved':
-          toast.success('✅ Article saved!', {
-            position: 'top-right',
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-          });
+          toast.success('✅ Article saved!', { position: 'top-right', autoClose: 3000 });
           break;
         case 'duplicate':
-          toast.info('ℹ️ Already saved.', {
-            position: 'top-right',
-            autoClose: 3000,
-          });
+          toast.info('ℹ️ Already saved.', { position: 'top-right', autoClose: 3000 });
           break;
         default:
-          toast.error('❌ Failed to save article.', {
-            position: 'top-right',
-            autoClose: 3000,
-          });
+          toast.error('❌ Failed to save article.', { position: 'top-right', autoClose: 3000 });
       }
     } catch (error) {
       console.error('Save error:', error);
@@ -137,18 +123,39 @@ const Dashboard: React.FC = () => {
     alert(`Summary:\n${summary}`);
   };
 
+const handleLogout = () => {
+  localStorage.removeItem('user');
+  localStorage.removeItem('token');
+  navigate('/dashboard'); // ✅ This triggers GuestDashboard via App.tsx
+};
+
+
   const filteredArticles = articles.filter(article =>
     article.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <div className="dashboard">
-      <Sidebar visible={sidebarVisible} onToggle={() => setSidebarVisible(false)} />
+      <button
+        className={`hamburger-button ${sidebarVisible ? 'inside' : 'outside'}`}
+        onClick={() => setSidebarVisible(!sidebarVisible)}
+      >
+        ☰
+      </button>
 
-      <div className="main" style={{ marginLeft: sidebarVisible ? '220px' : '0' }}>
+      <Sidebar
+        visible={sidebarVisible}
+        onToggle={() => setSidebarVisible(false)}
+        handleLogout={handleLogout}
+      />
+
+      <div className={`main ${sidebarVisible ? '' : 'collapsed'}`}>
         <Header
-          onToggleSidebar={() => setSidebarVisible(true)}
-          onSearch={setSearchTerm}
+        sidebarVisible={false}
+        onToggleSidebar={() => {}}
+        onSearch={setSearchTerm}
+        selectedCountry={selectedCountry}
+        onCountryChange={setSelectedCountry}
         />
 
         <div className="widgets">
@@ -156,6 +163,7 @@ const Dashboard: React.FC = () => {
           <Widget title="Active Categories" value={newsMetrics.categories} />
           <Widget title="News Sources" value={newsMetrics.sources} />
         </div>
+
 
         <div className="category-switcher">
           {user?.interests?.length > 0 ? (
@@ -172,21 +180,20 @@ const Dashboard: React.FC = () => {
             <p>No interests found. Please update your profile.</p>
           )}
         </div>
-
-        {/* ✅ Top Headlines */}
+        <h2>📰 Top Headlines</h2>
         <div className="news-feed">
-          <h2>📰 Top Headlines</h2>
+          
           {filteredArticles.map((article, index) => (
             <NewsCard
               key={index}
               article={article}
               onSave={handleSave}
               onSummarize={handleSummarize}
+              onRead={() => window.open(article.url, '_blank')}
             />
           ))}
         </div>
 
-        {/* ✅ Toast Container for Notifications */}
         <ToastContainer />
       </div>
     </div>

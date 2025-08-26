@@ -21,7 +21,7 @@
 .form-title {
   font-size: 1.6rem;
   text-align: center;
-  color: #e50914;
+  color: #0c0c0c;
   margin-bottom: 1rem;
 }
 
@@ -60,7 +60,7 @@
 }
 
 .register-button {
-  background: #e50914;
+  background: #161515;
   color: white;
   font-weight: bold;
   border: none;

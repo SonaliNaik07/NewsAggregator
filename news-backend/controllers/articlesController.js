@@ -1,97 +1,30 @@
-const axios = require('axios');
-const { JSDOM } = require('jsdom');
-const { Readability } = require('@mozilla/readability');
-const Article = require('../models/Article');
 const User = require('../models/User');
 
-// 🔹 Fetch personalized articles from NewsAPI
-const getPersonalizedNews = async (req, res) => {
-  const { interests } = req.body;
-  const NEWS_API_KEY = process.env.NEWS_API_KEY;
-
-  if (!interests || interests.length === 0) {
-    return res.status(400).json({ status: 'error', error: 'No interests provided' });
-  }
-
-  try {
-    const allArticles = [];
-
-    for (const category of interests) {
-      const response = await axios.get('https://newsapi.org/v2/top-headlines', {
-        params: {
-          category,
-          country: 'us',
-          apiKey: NEWS_API_KEY,
-          pageSize: 7,
-        },
-      });
-
-      const articles = response.data.articles.map((item) => ({
-        title: item.title,
-        description: item.description,
-        url: item.url,
-        urlToImage: item.urlToImage,
-        source: {
-          name: item.source?.name || 'Unknown',
-        },
-        publishedAt: item.publishedAt || new Date(),
-      }));
-
-      allArticles.push(...articles);
-    }
-
-    res.json({ status: 'success', articles: allArticles });
-  } catch (err) {
-    console.error('📰 News fetch error:', err.message);
-    res.status(500).json({ status: 'error', error: 'Failed to fetch personalized news' });
-  }
-};
-
-// 🔹 Fetch articles from MongoDB
 const getArticles = async (req, res) => {
   try {
-    const articles = await Article.find().sort({ createdAt: -1 });
-    res.json({ status: 'success', articles });
+    res.status(200).json({ message: 'Articles fetched successfully.' });
   } catch (err) {
-    console.error('📁 Mongo fetch error:', err.message);
-    res.status(500).json({ status: 'error', error: 'Failed to fetch articles' });
+    console.error('❌ Fetch error:', err.message);
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 
-// 🔹 Summarize article and optionally save
 const summarizeArticle = async (req, res) => {
-  const { url, save } = req.body;
-
-  try {
-    const html = await axios.get(url);
-    const dom = new JSDOM(html.data, { url });
-    const reader = new Readability(dom.window.document);
-    const article = reader.parse();
-    const summary = article?.textContent?.slice(0, 200) + '...';
-
-    if (save) {
-      const newArticle = new Article({
-        title: article?.title || 'Untitled',
-        url,
-        summary,
-      });
-      await newArticle.save();
-    }
-
-    res.json({ status: 'success', summary });
-  } catch (err) {
-    console.error('📝 Summarization error:', err.message);
-    res.status(500).json({ status: 'error', error: 'Failed to summarize article' });
-  }
+  res.status(200).json({ summary: 'This is a dummy summary.' });
 };
 
-// 🔹 Save article to user's saved list
+const getPersonalizedNews = async (req, res) => {
+  res.status(200).json({ articles: [] });
+};
+
 const saveArticleToUser = async (req, res) => {
   const { userId } = req.params;
   const article = req.body;
 
-  console.log('📦 Incoming article:', article);
-  console.log('🔍 Looking for user:', userId);
+  if (!article.url) {
+    console.warn('⚠️ Missing article URL');
+    return res.status(400).json({ status: 'error', error: 'Article URL is required' });
+  }
 
   try {
     const user = await User.findById(userId);
@@ -107,8 +40,8 @@ const saveArticleToUser = async (req, res) => {
     }
 
     const formattedArticle = {
-      title: article.title || 'Untitled',
-      description: article.description || '',
+      title: article.title?.trim() || 'Untitled',
+      description: article.description?.trim() || '',
       url: article.url,
       urlToImage: article.urlToImage || '',
       source: {
@@ -127,7 +60,6 @@ const saveArticleToUser = async (req, res) => {
     });
   } catch (err) {
     console.error('❌ Save error:', err.message);
-    console.error('🧵 Stack trace:', err.stack);
     return res.status(500).json({ status: 'error', error: err.message });
   }
 };

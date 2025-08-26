@@ -1,0 +1,226 @@
+.admin-dashboard {
+  padding: 2rem;
+  background-color: #f9fafc;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.user-table th,
+.user-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.user-table th {
+  background-color: #eef2f7;
+  font-weight: 600;
+  color: #555;
+}
+
+.user-table tr:hover {
+  background-color: #f1f7ff;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.edit-btn,
+.delete-btn {
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.edit-btn {
+  background-color: #4caf50;
+  color: white;
+  margin-right: 8px;
+}
+
+.delete-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.edit-btn:hover,
+.delete-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+@media screen and (max-width: 768px) {
+  .user-table th,
+  .user-table td {
+    padding: 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  .edit-btn,
+  .delete-btn {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+  }
+}
+.admin-dashboard {
+  padding: 2rem;
+  background-color: #f9fafc;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+/* Table Styling */
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.user-table th,
+.user-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.user-table th {
+  background-color: #eef2f7;
+  font-weight: 600;
+  color: #555;
+}
+
+.user-table tr:hover {
+  background-color: #f1f7ff;
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* Buttons */
+.edit-btn,
+.delete-btn {
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.edit-btn {
+  background-color: #4caf50;
+  color: white;
+  margin-right: 8px;
+}
+
+.delete-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.edit-btn:hover,
+.delete-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Role-based highlight */
+.user-table td:nth-child(3) {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.user-table td:nth-child(3):contains("Admin") {
+  color: #d32f2f;
+}
+
+.user-table td:nth-child(3):contains("Student") {
+  color: #1976d2;
+}
+
+.user-table td:nth-child(3):contains("Researcher") {
+  color: #388e3c;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .user-table th,
+  .user-table td {
+    padding: 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  .edit-btn,
+  .delete-btn {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Optional Dark Mode */
+@media (prefers-color-scheme: dark) {
+  .admin-dashboard {
+    background-color: #1e1e1e;
+    color: #f0f0f0;
+  }
+
+  .user-table {
+    background-color: #2c2c2c;
+    box-shadow: none;
+  }
+
+  .user-table th {
+    background-color: #3a3a3a;
+    color: #ddd;
+  }
+
+  .user-table td {
+    border-bottom: 1px solid #444;
+    color: #ccc;
+  }
+
+  .user-table tr:hover {
+    background-color: #333;
+  }
+
+  .edit-btn {
+    background-color: #66bb6a;
+  }
+
+  .delete-btn {
+    background-color: #e57373;
+  }
+}
+
+.admin-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.logout-btn {
+  background-color: #e50914;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background-color: #c40812;
+}

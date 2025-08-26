@@ -5,29 +5,34 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-const handleLogin = async () => {
-  try {
-    const res = await fetch('/api/users/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
+  const handleLogin = async () => {
+    try {
+      const res = await fetch('/api/users/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (data.error) {
-      alert(data.error);
-    } else {
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      window.location.href = '/dashboard';
+      if (data.error) {
+        alert(data.error);
+      } else {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+
+        // ✅ Role-based redirection
+        if (data.user.role === 'Admin') {
+          window.location.href = '/admin-dashboard';
+        } else {
+          window.location.href = '/dashboard';
+        }
+      }
+    } catch (err) {
+      console.error('Login error:', err);
+      alert('Login failed. Please try again.');
     }
-  } catch (err) {
-    console.error('Login error:', err);
-    alert('Login failed. Please try again.');
-  }
-};
-
+  };
 
   return (
     <div className="login-wrapper">

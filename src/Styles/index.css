@@ -30,7 +30,7 @@
 .form-title {
   font-size: 1.7rem;
   font-weight: bold;
-  color: #e50914;
+  color: #0e0c0c;
   text-transform: uppercase;
   margin-bottom: 0.25rem;
 }
@@ -50,31 +50,31 @@
   margin: 0 auto;
 }
 
-/* 📩 Input Field */
 .input-field {
   width: 100%;
-  padding: 0.75rem 2.5rem 0.75rem 2.5rem; /* space for both left + right icons */
+  padding: 0.75rem 2.5rem 0.75rem 2.5rem; /* space for icons */
   font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
 }
 
-/* 🔎 Icon Style */
+/* Icon Style */
 .material-symbols-outlined {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   font-size: 1.2rem;
   color: #888;
+  pointer-events: none;
 }
 
-/* 🔐 Lock icon on left */
+/* Left-aligned icon */
 .icon-lock {
   left: 10px;
 }
 
-/* 👁️ Eye icon on right */
+/* Optional: Right-aligned icon (e.g. eye toggle) */
 .icon-eye {
   right: 10px;
   cursor: pointer;
@@ -91,7 +91,7 @@
 
 /* 🔘 Login Button */
 .login-button {
-  background-color: #e50914;
+  background-color: #181717;
   color: white;
   border: none;
   padding: 0.8rem;
@@ -110,7 +110,7 @@
 }
 
 .signup-text a {
-  color: #e50914;
+  color: #be0b0b;
   text-decoration: none;
 }
 

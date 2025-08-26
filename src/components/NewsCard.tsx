@@ -1,15 +1,32 @@
 import React from 'react';
 import { NewsArticle } from '../Types/NewsArticle';
-import '../Styles/NewsCard.css'; // Make sure this path matches your folder structure
+import '../Styles/NewsCard.css';
 
 interface NewsCardProps {
   article: NewsArticle;
   onSave: (article: NewsArticle) => void;
   onSummarize: (article: NewsArticle) => void;
-  summary?: string; // 👈 optional prop for displaying summary
+  onRead: () => void;
+  summary?: string;
 }
 
-const NewsCard: React.FC<NewsCardProps> = ({ article, onSave, onSummarize, summary }) => {
+const NewsCard: React.FC<NewsCardProps> = ({
+  article,
+  onSave,
+  onSummarize,
+  onRead,
+  summary,
+}) => {
+  const formattedDate = article.publishedAt
+    ? new Date(article.publishedAt).toLocaleString('en-IN', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+    : 'Unknown date';
+
   return (
     <div className="news-card">
       {/* ✅ Image section */}
@@ -23,23 +40,29 @@ const NewsCard: React.FC<NewsCardProps> = ({ article, onSave, onSummarize, summa
         <div className="image-placeholder">No Image Available</div>
       )}
 
-      <h3>{article.title}</h3>
-      <p>{article.description}</p>
+      {/* ✅ Content section */}
+      <div className="news-content">
+        <h3 className="news-title">{article.title}</h3>
+        <p className="news-meta">
+          <strong>{article.source?.name || 'Unknown Source'}</strong> • {formattedDate}
+        </p>
+        <p className="news-description">{article.description}</p>
 
-      <div className="news-actions">
-        <button onClick={() => onSave(article)}>Save</button>
-        <button onClick={() => onSummarize(article)}>Summarize</button>
-        <a href={article.url} target="_blank" rel="noopener noreferrer">
-          <button>Read Full Article</button>
-        </a>
-      </div>
-
-      {summary && (
-        <div className="summary-box">
-          <h4>Summary:</h4>
-          <p>{summary}</p>
+        {/* ✅ Action buttons */}
+        <div className="news-actions">
+          <button onClick={() => onSave(article)}>Save</button>
+          <button onClick={() => onSummarize(article)}>Summarize</button>
+          <button onClick={onRead}>Read Full Article</button>
         </div>
-      )}
+
+        {/* ✅ Optional summary display */}
+        {summary && (
+          <div className="summary-box">
+            <h4>Summary:</h4>
+            <p>{summary}</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

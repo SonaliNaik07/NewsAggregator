@@ -3,11 +3,9 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-const Article = require('../models/Article'); // ✅ Add this line
+const Article = require('../models/Article');
 const { saveArticleToUser } = require('../controllers/articlesController');
-
-// 🔹 Save article to user's saved list
-router.post('/users/:userId/save', saveArticleToUser);
+const { register, getAllUsers, updateUser } = require('../controllers/userController');
 
 // 🔐 JWT Auth Middleware
 function authenticateToken(req, res, next) {
@@ -16,48 +14,19 @@ function authenticateToken(req, res, next) {
 
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) return res.status(403).json({ error: 'Invalid token.' });
-    req.user = user;
+    req.user = { id: user.id || user._id };
     next();
   });
 }
 
-// 🔹 Register new user
-router.post('/register', async (req, res) => {
-  const { name, email, password, role, categories } = req.body;
-
-  if (!name || !email || !password || !role || !Array.isArray(categories) || categories.length === 0) {
-    return res.status(400).json({ error: 'All fields are required.' });
-  }
-
-  try {
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(409).json({ error: 'Email already registered.' });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const newUser = new User({
-      name,
-      email,
-      password: hashedPassword,
-      role,
-      categories,
-      interests: categories,
-    });
-
-    await newUser.save();
-    res.status(201).json({ message: 'User registered successfully.' });
-  } catch (err) {
-    console.error('Registration error:', err);
-    res.status(500).json({ error: 'Server error during registration.' });
-  }
-});
+// 🔹 Register new user (delegated to controller)
+router.post('/register', register);
 
 // 🔹 Login user
 router.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+
   try {
-    const { email, password } = req.body;
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ error: 'User not found.' });
 
@@ -78,10 +47,10 @@ router.post('/interests', authenticateToken, async (req, res) => {
   const userId = req.user.id;
 
   try {
-    const user = await User.findOneAndUpdate(
-      { _id: userId },
+    const user = await User.findByIdAndUpdate(
+      userId,
       { $set: { interests } },
-      { upsert: true, new: true }
+      { new: true }
     );
     res.json(user);
   } catch (err) {
@@ -90,11 +59,14 @@ router.post('/interests', authenticateToken, async (req, res) => {
   }
 });
 
+// 🔹 Save article to user's saved list
+router.post('/users/:userId/save', saveArticleToUser);
+
 // 🔹 Save article to global Article collection
 router.post('/saveArticle', async (req, res) => {
-  try {
-    const { title, description, url, urlToImage, publishedAt, source } = req.body;
+  const { title, description, url, urlToImage, publishedAt, source } = req.body;
 
+  try {
     const existing = await Article.findOne({ url });
     if (existing) return res.status(409).json({ message: 'Already saved' });
 
@@ -108,4 +80,19 @@ router.post('/saveArticle', async (req, res) => {
   }
 });
 
+//delete user 
+router.delete('/:id', async (req, res) => {
+  try {
+    const deletedUser = await User.findByIdAndDelete(req.params.id);
+    if (!deletedUser) return res.status(404).json({ error: 'User not found' });
+    res.json({ message: 'User deleted successfully' });
+  } catch (err) {
+    console.error('Delete error:', err.message);
+    res.status(500).json({ error: 'Server error during deletion' });
+  }
+});
+
+router.put('/users/:id', updateUser);
+
+router.get('/', getAllUsers); // ✅ This handles GET /api/users
 module.exports = router;

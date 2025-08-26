@@ -1,4 +1,3 @@
-// src/types/NewsItem.ts
 export interface NewsItem {
   id: string;
   title: string;
@@ -8,5 +7,6 @@ export interface NewsItem {
   };
   publishedAt: string;
   url: string;
-  imageUrl?: string;
+  imageUrl?: string;     // ✅ Existing field
+  urlToImage?: string;   // ✅ Added for compatibility
 }

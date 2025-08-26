@@ -8,32 +8,50 @@ const savedArticleSchema = new mongoose.Schema({
   source: {
     name: { type: String, required: true }
   },
-  publishedAt: String,
+  publishedAt: Date,
 });
-
-
 
 const userSchema = new mongoose.Schema({
   name: String,
   email: { type: String, unique: true },
   password: String,
-  role: String,
-  categories: [String],
+
+  role: {
+    type: String,
+    required: true
+  },
+
+  categories: {
+    type: [String],
+    default: [],
+    required: function () {
+      return this.role !== 'Admin';
+    },
+  },
+
+  status: {
+    type: String,
+    enum: ['active', 'inactive'],
+    default: 'active'
+  },
+
   interests: {
     type: [String],
     default: [],
   },
-savedNews: {
-  type: [savedArticleSchema], // ✅ Use the defined schema
-  default: [],
-},
+
+  savedNews: {
+    type: [savedArticleSchema],
+    default: [],
+  },
+
   lastNotified: {
-  type: Date,
-  default: null,
-}
-},
- {
-  timestamps: true // 👈 adds createdAt and updatedAt automatically
+    type: Date,
+    default: null,
+  }
+}, {
+  timestamps: true
 });
+
 
 module.exports = mongoose.model('User', userSchema);

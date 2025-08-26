@@ -12,14 +12,14 @@ const Register: React.FC = () => {
     categories: [] as string[],
   });
 
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleCategories = (selected: string[]) => {
-    if (selected.length <= 1) {
-      setFormData({ ...formData, categories: selected });
-    }
+    setFormData({ ...formData, categories: selected });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -30,25 +30,33 @@ const Register: React.FC = () => {
       return;
     }
 
-    if (formData.categories.length === 0) {
+    if (formData.role !== 'Admin' && formData.categories.length === 0) {
       alert("Please select at least one news category.");
       return;
     }
 
+    setLoading(true);
+
     try {
+      const payload: any = {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        role: formData.role,
+      };
+
+      if (formData.role !== 'Admin') {
+        payload.categories = formData.categories;
+      }
+
       const res = await fetch('http://localhost:5000/api/users/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-          role: formData.role,
-          categories: formData.categories,
-        }),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
+      console.log('📥 Server response:', data);
 
       if (data.error) {
         alert(data.error);
@@ -57,15 +65,17 @@ const Register: React.FC = () => {
         window.location.href = '/login';
       }
     } catch (err) {
-      console.error('Registration error:', err);
+      console.error('❌ Registration error:', err);
       alert('Something went wrong during registration.');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="register-wrapper">
       <form className="register-card" onSubmit={handleSubmit}>
-        <h2 className="form-title">Create Your PressDesk Account</h2>
+        <h2 className="form-title">Create Your Account</h2>
 
         <input
           type="text"
@@ -118,11 +128,16 @@ const Register: React.FC = () => {
           <option value="Student">Student</option>
           <option value="Researcher">Researcher</option>
           <option value="General">General</option>
+          <option value="Admin">Admin</option>
         </select>
 
-        <CategorySelect selected={formData.categories} onSelect={handleCategories} />
+        {formData.role !== 'Admin' && (
+          <CategorySelect selected={formData.categories} onSelect={handleCategories} />
+        )}
 
-        <button type="submit" className="register-button">Register</button>
+        <button type="submit" className="register-button" disabled={loading}>
+          {loading ? 'Registering...' : 'Register'}
+        </button>
 
         <p className="login-link">
           Already have an account? <a href="/login">Log in</a>
