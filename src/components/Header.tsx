@@ -1,6 +1,7 @@
 import React from 'react';
 import '../Styles/Dashboard.css';
 import { useNavigate } from 'react-router-dom';
+import { FaUserCircle } from 'react-icons/fa'; // 👈 Import user icon
 
 interface HeaderProps {
   sidebarVisible: boolean;
@@ -8,7 +9,7 @@ interface HeaderProps {
   onSearch: (term: string) => void;
   selectedCountry: string;
   onCountryChange: (country: string) => void;
-  showAuthButtons?: boolean; // 👈 New optional prop
+  showAuthButtons?: boolean;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -62,6 +63,13 @@ const Header: React.FC<HeaderProps> = ({
             </button>
           </>
         )}
+
+        {/* 👤 Profile Icon */}
+  <FaUserCircle
+    className="profile-icon"
+    size={28}
+    onClick={() => navigate('/user-dashboard')}
+  />
       </div>
     </div>
   );

@@ -22,35 +22,39 @@ const App: React.FC = () => {
   const isGuest = user.role === 'Guest';
 
   return (
-    <Router>
-      <Routes>
-        {/* 👇 Redirect root to dashboard */}
-        <Route path="/" element={<Navigate to="/dashboard" />} />
+<Router>
+  <Routes>
+    {/* 👇 Redirect root to dashboard */}
+    <Route path="/" element={<Navigate to="/dashboard" />} />
 
-        {/* 👇 Role-based dashboard */}
-        <Route
-          path="/dashboard"
-          element={
-            isAdmin ? (
-              <Navigate to="/admin-dashboard" />
-            ) : isGuest ? (
-              <GuestDashboard />
-            ) : (
-              <Dashboard />
-            )
-          }
-        />
+    {/* 👇 Role-based dashboard */}
+    <Route
+      path="/dashboard"
+      element={
+        isAdmin ? (
+          <Navigate to="/admin-dashboard" />
+        ) : isGuest ? (
+          <GuestDashboard />
+        ) : (
+          <Dashboard />
+        )
+      }
+    />
 
-        {/* 👇 Auth routes */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+    {/* 👇 Auth routes */}
+    <Route path="/login" element={<Login />} />
+    <Route path="/register" element={<Register />} />
 
-        {/* 👇 Admin route */}
-        <Route path="/admin-dashboard" element={<AdminDashboard />} />
-      </Routes>
+    {/* 👇 Admin route */}
+    <Route path="/admin-dashboard" element={<AdminDashboard />} />
 
-      <ToastContainer />
-    </Router>
+    {/* ✅ User dashboard route — now correctly placed */}
+    <Route path="/user-dashboard" element={<UserDashboard />} />
+  </Routes>
+
+  <ToastContainer />
+</Router>
+
   );
 };
 

@@ -499,3 +499,14 @@ html, body {
   opacity: 0.9;
 }
 
+.profile-icon {
+  cursor: pointer;
+  color: white;
+  margin-left: 12px;
+  transition: transform 0.2s ease;
+}
+
+.profile-icon:hover {
+  transform: scale(1.1);
+  color: #ccc;
+}
